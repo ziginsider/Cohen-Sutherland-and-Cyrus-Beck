@@ -558,7 +558,7 @@
             this.Controls.Add(this.button_start);
             this.Controls.Add(this.panel_draw);
             this.Name = "Form1";
-            this.Text = "AKG BSUIR Lab 2 var 6 Marina Lynx";
+            this.Text = "AKG BSUIR Lab 1 var 13, Lab 4 var 6, Lab 5 var 2 Marina Lynx";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_x1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_x2)).EndInit();
