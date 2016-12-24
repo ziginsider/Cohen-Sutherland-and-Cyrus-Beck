@@ -21,6 +21,7 @@ namespace Laba1
         int coef_const; //коеф неизменяемый
         int rmin, rmax, smin, smax; //диапазоны смещения при хаотическом движение
         int iter = 0;
+        int ix, iy; //смещение при хаотическом движении
 
         //для алгоритма отсечения Сазерленла-Коуэна:
         //коды
@@ -230,39 +231,133 @@ namespace Laba1
 
                 int penWidth = (int)trackBar_pen.Value;
 
-                //рисуем треугольник
-               // pen = new Pen(Color.Blue, penWidth);
-               // DrawTriange(X1, Y1, X2, Y2, X3, Y3);
+                if (radioButton_l1.Checked == true)
+                {
+                    //Задание 1
+                    //рисуем треугольник
+                    pen = new Pen(Color.Blue, penWidth);
+                    DrawTriange(X1, Y1, X2, Y2, X3, Y3);
+                }
+
+                if (radioButton_l2.Checked == true)
+                {
+                    //начинаем алгоритм Сазерленда-Коуэна:
+
+                    //рисуем наше отсекающее окно состоящее из трёх прямоугольников (вариант f-6)
+
+                    pen = new Pen(Color.Red, penWidth);
+
+                    DrawRectangle(left1, right1, bottom1, top1);
+                    DrawRectangle(left2, right2, bottom2, top2);
+                    DrawRectangle(left3, right3, bottom3, top3);
+
+                    //pen = new Pen(Color.Blue, penWidth);
+                    //DrawLine(100, 300, 600, 400);
+
+                    pen = new Pen(Color.Green, penWidth);
+
+                    //отсечение отрезков треугольника методом Сазерленда-Коэна
+                    Lauch_Suth(X1, Y1, X2, Y2);
+                    Lauch_Suth(X3, Y3, X2, Y2);
+                    Lauch_Suth(X1, Y1, X3, Y3);
+                }
+                if (radioButton_l3.Checked == true)
+                {
+                    //начинаем алгоритм отсечения Кируса-Бека 
+                    //рисуем форму окна вариант b
+                    pen = new Pen(Color.Black, penWidth);
+
+                    PointF A1 = new PointF(400, 225);
+                    PointF A2 = new PointF(450, 300);
+                    PointF A3 = new PointF(400, 375);
+                    PointF A4 = new PointF(500, 375);
+                    PointF A5 = new PointF(550, 450);
+                    PointF A6 = new PointF(600, 375);
+                    PointF A7 = new PointF(700, 375);
+                    PointF A8 = new PointF(650, 300);
+                    PointF A9 = new PointF(700, 225);
+                    PointF A10 = new PointF(600, 225);
+                    PointF A11 = new PointF(550, 150);
+                    PointF A12 = new PointF(500, 225);
+
+                    DrawLinePointF(A1, A2);
+                    DrawLinePointF(A2, A3);
+                    DrawLinePointF(A3, A4);
+                    DrawLinePointF(A4, A5);
+                    DrawLinePointF(A5, A6);
+                    DrawLinePointF(A6, A7);
+                    DrawLinePointF(A7, A8);
+                    DrawLinePointF(A8, A9);
+                    DrawLinePointF(A9, A10);
+                    DrawLinePointF(A10, A11);
+                    DrawLinePointF(A11, A12);
+                    DrawLinePointF(A12, A1);
+
+                    //Polygon myPolygon = new Polygon(new List<PointF> { A1, A5, A9 });
+                    //List<Segment> Result = new List<Segment>();
+                    //PointF test1 = new PointF(420, 450);
+                    //PointF test2 = new PointF(650, 150);
+                    //Segment seg1 = new Segment(test1, test2);
+
+                    //List<Segment> Test = new List<Segment>();
+                    //Test.Add(seg1);
+
+                    //Result = myPolygon.CyrusBeckClip(Test);
+
+                    //DrawLinePointF(Result[0].A, Result[0].B);
+
+                    pen = new Pen(Color.Crimson, penWidth); //настраиваем перо
+
+                    //разбиваем наш невыпуклый многоульник на несколько выпуклых: 7 треугольников и один шестигранник
+                    List<Polygon> convexPolygons = new List<Polygon> {
+                        new Polygon (new List<PointF> { A1, A2, A12 }),
+                        new Polygon (new List<PointF> { A2, A3, A4 }),
+                        new Polygon (new List<PointF> { A4, A5, A6 }),
+                        new Polygon (new List<PointF> { A6, A7, A8 }),
+                        new Polygon (new List<PointF> { A10, A8, A9 }),
+                        new Polygon (new List<PointF> { A12, A10, A11 }),
+                        new Polygon (new List<PointF> { A12, A2, A4, A6, A8, A10})
+                    };
+
+                    //получаем три сегмента (три отрезка составляющие наш треугольник) которые нужно отсечь окном с исп. алг. Кируса-Бека
+                    List<Segment> triangleSegments = new List<Segment>
+                    {
+                        GetSegmentFromLine(X1, Y1, X2, Y2),
+                        GetSegmentFromLine(X2, Y2, X3, Y3),
+                        GetSegmentFromLine(X1, Y1, X3, Y3)
+                    };
+
+                    List<Segment> result = new List<Segment>(); //результат отсечения: сегменты
+
+                    //проходим по всем выпуклым многоугольникам составляющим наше окно и отсекаем отрезки составляющие треугольникв
+                    foreach (Polygon polygon in convexPolygons) //для каждого выпуклого многоугольника
+                    {
+                        //для каждого отсекаемого отрезка 
+                        //применяем алгоритм внутреннего отсечения окном Кируса-Бека
+                        result = polygon.CyrusBeckClip(triangleSegments);
+
+                        //рисуем отсеченные отрезки на экране
+                        DrawSegments(result);
+
+                        //обнуляем результат
+                        result.Clear();
+                        
+                    }
 
 
-                //начинаем алгоритм Сазерленда-Коуэна:
+                }
 
-                //рисуем наше отсекающее окно состоящее из трёх прямоугольников (вариант f-6)
-               
-                pen = new Pen(Color.Red, penWidth);
-
-                DrawRectangle(left1, right1, bottom1, top1);
-                DrawRectangle(left2, right2, bottom2, top2);
-                DrawRectangle(left3, right3, bottom3, top3);
-
-                //pen = new Pen(Color.Blue, penWidth);
-                //DrawLine(100, 300, 600, 400);
-
-                pen = new Pen(Color.Green, penWidth);
-
-                //отсечение отрезков треугольника методом Сазерленда-Коэна
-                Lauch_Suth(X1, Y1, X2, Y2);
-                Lauch_Suth(X3, Y3, X2, Y2);
-                Lauch_Suth(X1, Y1, X3, Y3);
-
-
-                //получаем рандомное смещение от -2 до 2 (по условию) для следующего шага анимации
-                Random rndx = new Random();
-                int ix = rndx.Next(rmin, (rmax + 1)); //смещение по оси абсцисс
-                System.Threading.Thread.Sleep(25);
-                Random rndy = new Random();
-                int iy = rndy.Next(smin, (smax + 1)); //смещение по оси ординат
-
+                //Хаотическое движение треугольника
+                if (iter % 10 == 0) //направление смещения меняется каждые 10 шагов
+                {
+                    //получаем рандомное смещение от -2 до 2 (по условию) для следующего шага анимации
+                    Random rndx = new Random();
+                    ix = rndx.Next(rmin, (rmax + 1)); //смещение по оси абсцисс
+                    System.Threading.Thread.Sleep(25);
+                    Random rndy = new Random();
+                    iy = rndy.Next(smin, (smax + 1)); //смещение по оси ординат
+                }
+                
                 //меняем значения координат точек (смещаем треугольник) для следующего шага 
                 X1 += ix;
                 X2 += ix;
@@ -271,8 +366,7 @@ namespace Laba1
                 Y2 += iy;
                 Y3 += iy;
 
-
-                if (checkBox_scale.Checked == true)
+                if (checkBox_scale.Checked == true) //уменьшение масштаба
                 {
                     if (coef <= 0) coef = 1; //проверка допустимого коэф
 
@@ -477,7 +571,37 @@ namespace Laba1
         void Lauch_Suth(int x1, int y1, int x2, int y2)
         {
             CohenSutherland(x1, y1, x2, y2, left1, right1, bottom1, top1, 1);
+        }
+
+        //алгоритм Кируса-Бека вспомогательные функции
+        private void DrawLinePointF(PointF A, PointF B)
+        {
+            int x1 = (int)Math.Round(A.X);
+            int x2 = (int)Math.Round(B.X);
+            int y1 = (int)Math.Round(A.Y);
+            int y2 = (int)Math.Round(B.Y);
+            DrawLine(x1, y1, x2, y2);
         } 
+
+        //возвращаем Segment по полученным целочисленным координатам отрезка
+        private Segment GetSegmentFromLine(int x1, int y1, int x2, int y2)
+        {
+            PointF p1 = new PointF((float)x1, (float)y1);
+            PointF p2 = new PointF((float)x2, (float)y2);
+
+            Segment segment = new Segment(p1, p2);
+
+            return segment;
+        }
+
+        //рисуем отрезки на экране по полученному массиву сегментов
+        private void DrawSegments(List<Segment> listSegments)
+        {
+            foreach (Segment segment in listSegments)
+            {
+                DrawLinePointF(segment.A, segment.B);
+            }
+        }
 
     }
 }
