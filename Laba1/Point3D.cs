@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Laba1
 {
-    public struct Point3D //структура кот. содержит описание точки в трёхмерном пространстве
+    public struct Point3D //структура кот.  содержит описание точки в трёхмерном пространстве
     {
         public double X, Y, Z;
 
