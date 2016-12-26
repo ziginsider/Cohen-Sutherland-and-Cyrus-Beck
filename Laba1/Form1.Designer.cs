@@ -30,6 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel_draw = new System.Windows.Forms.Panel();
+            this.checkBox_clear = new System.Windows.Forms.CheckBox();
+            this.checkBox_scale = new System.Windows.Forms.CheckBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.numericUpDown_coef = new System.Windows.Forms.NumericUpDown();
             this.button_start = new System.Windows.Forms.Button();
             this.button_stop = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -46,7 +50,6 @@
             this.numericUpDown_y2 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown_y3 = new System.Windows.Forms.NumericUpDown();
             this.timer_start = new System.Windows.Forms.Timer(this.components);
-            this.checkBox_clear = new System.Windows.Forms.CheckBox();
             this.trackBar_pen = new System.Windows.Forms.TrackBar();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -57,15 +60,23 @@
             this.label12 = new System.Windows.Forms.Label();
             this.numericUpDown_smin = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown_smax = new System.Windows.Forms.NumericUpDown();
-            this.checkBox_scale = new System.Windows.Forms.CheckBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.numericUpDown_coef = new System.Windows.Forms.NumericUpDown();
             this.trackBar_speedanimate = new System.Windows.Forms.TrackBar();
             this.label14 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.radioButton_l4 = new System.Windows.Forms.RadioButton();
             this.radioButton_l3 = new System.Windows.Forms.RadioButton();
             this.radioButton_l2 = new System.Windows.Forms.RadioButton();
             this.radioButton_l1 = new System.Windows.Forms.RadioButton();
+            this.label15 = new System.Windows.Forms.Label();
+            this.checkBox_rotate = new System.Windows.Forms.CheckBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.checkBox_segment = new System.Windows.Forms.CheckBox();
+            this.checkBox_axis = new System.Windows.Forms.CheckBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.trackBar_X = new System.Windows.Forms.TrackBar();
+            this.label18 = new System.Windows.Forms.Label();
+            this.trackBar_Y = new System.Windows.Forms.TrackBar();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_coef)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_x1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_x2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_x3)).BeginInit();
@@ -77,9 +88,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_rmax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_smin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_smax)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_coef)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_speedanimate)).BeginInit();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_X)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_Y)).BeginInit();
             this.SuspendLayout();
             // 
             // panel_draw
@@ -90,6 +102,57 @@
             this.panel_draw.Name = "panel_draw";
             this.panel_draw.Size = new System.Drawing.Size(1400, 700);
             this.panel_draw.TabIndex = 0;
+            // 
+            // checkBox_clear
+            // 
+            this.checkBox_clear.AutoSize = true;
+            this.checkBox_clear.Location = new System.Drawing.Point(914, 724);
+            this.checkBox_clear.Name = "checkBox_clear";
+            this.checkBox_clear.Size = new System.Drawing.Size(210, 21);
+            this.checkBox_clear.TabIndex = 6;
+            this.checkBox_clear.Text = "Отображать все состояния";
+            this.checkBox_clear.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_scale
+            // 
+            this.checkBox_scale.AutoSize = true;
+            this.checkBox_scale.Location = new System.Drawing.Point(914, 754);
+            this.checkBox_scale.Name = "checkBox_scale";
+            this.checkBox_scale.Size = new System.Drawing.Size(166, 21);
+            this.checkBox_scale.TabIndex = 6;
+            this.checkBox_scale.Text = "Уменьшать масштаб";
+            this.checkBox_scale.UseVisualStyleBackColor = true;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(911, 782);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(187, 17);
+            this.label13.TabIndex = 2;
+            this.label13.Text = "Коэффициент уменьшения";
+            // 
+            // numericUpDown_coef
+            // 
+            this.numericUpDown_coef.Location = new System.Drawing.Point(1011, 802);
+            this.numericUpDown_coef.Maximum = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            this.numericUpDown_coef.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown_coef.Name = "numericUpDown_coef";
+            this.numericUpDown_coef.Size = new System.Drawing.Size(63, 22);
+            this.numericUpDown_coef.TabIndex = 5;
+            this.numericUpDown_coef.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // button_start
             // 
@@ -281,30 +344,20 @@
             this.timer_start.Interval = 50;
             this.timer_start.Tick += new System.EventHandler(this.timer_start_Tick);
             // 
-            // checkBox_clear
-            // 
-            this.checkBox_clear.AutoSize = true;
-            this.checkBox_clear.Location = new System.Drawing.Point(664, 722);
-            this.checkBox_clear.Name = "checkBox_clear";
-            this.checkBox_clear.Size = new System.Drawing.Size(207, 21);
-            this.checkBox_clear.TabIndex = 6;
-            this.checkBox_clear.Text = "отображать все состояния";
-            this.checkBox_clear.UseVisualStyleBackColor = true;
-            // 
             // trackBar_pen
             // 
-            this.trackBar_pen.Location = new System.Drawing.Point(653, 795);
+            this.trackBar_pen.Location = new System.Drawing.Point(529, 834);
             this.trackBar_pen.Maximum = 5;
             this.trackBar_pen.Minimum = 1;
             this.trackBar_pen.Name = "trackBar_pen";
-            this.trackBar_pen.Size = new System.Drawing.Size(160, 56);
+            this.trackBar_pen.Size = new System.Drawing.Size(113, 56);
             this.trackBar_pen.TabIndex = 7;
             this.trackBar_pen.Value = 1;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(661, 767);
+            this.label8.Location = new System.Drawing.Point(423, 840);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(108, 17);
             this.label8.TabIndex = 8;
@@ -313,7 +366,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(876, 721);
+            this.label9.Location = new System.Drawing.Point(660, 718);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(217, 17);
             this.label9.TabIndex = 2;
@@ -322,7 +375,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(876, 739);
+            this.label10.Location = new System.Drawing.Point(660, 736);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(179, 17);
             this.label10.TabIndex = 2;
@@ -331,7 +384,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(876, 767);
+            this.label11.Location = new System.Drawing.Point(660, 764);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(89, 17);
             this.label11.TabIndex = 2;
@@ -339,7 +392,7 @@
             // 
             // numericUpDown_rmin
             // 
-            this.numericUpDown_rmin.Location = new System.Drawing.Point(971, 767);
+            this.numericUpDown_rmin.Location = new System.Drawing.Point(755, 764);
             this.numericUpDown_rmin.Maximum = new decimal(new int[] {
             9,
             0,
@@ -356,7 +409,7 @@
             // 
             // numericUpDown_rmax
             // 
-            this.numericUpDown_rmax.Location = new System.Drawing.Point(1050, 767);
+            this.numericUpDown_rmax.Location = new System.Drawing.Point(834, 764);
             this.numericUpDown_rmax.Maximum = new decimal(new int[] {
             10,
             0,
@@ -374,7 +427,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(876, 804);
+            this.label12.Location = new System.Drawing.Point(660, 801);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(91, 17);
             this.label12.TabIndex = 2;
@@ -382,7 +435,7 @@
             // 
             // numericUpDown_smin
             // 
-            this.numericUpDown_smin.Location = new System.Drawing.Point(971, 804);
+            this.numericUpDown_smin.Location = new System.Drawing.Point(755, 801);
             this.numericUpDown_smin.Maximum = new decimal(new int[] {
             9,
             0,
@@ -399,7 +452,7 @@
             // 
             // numericUpDown_smax
             // 
-            this.numericUpDown_smax.Location = new System.Drawing.Point(1050, 804);
+            this.numericUpDown_smax.Location = new System.Drawing.Point(834, 801);
             this.numericUpDown_smax.Maximum = new decimal(new int[] {
             10,
             0,
@@ -414,61 +467,20 @@
             this.numericUpDown_smax.Size = new System.Drawing.Size(63, 22);
             this.numericUpDown_smax.TabIndex = 5;
             // 
-            // checkBox_scale
-            // 
-            this.checkBox_scale.AutoSize = true;
-            this.checkBox_scale.Location = new System.Drawing.Point(1148, 722);
-            this.checkBox_scale.Name = "checkBox_scale";
-            this.checkBox_scale.Size = new System.Drawing.Size(164, 21);
-            this.checkBox_scale.TabIndex = 6;
-            this.checkBox_scale.Text = "уменьшать масштаб";
-            this.checkBox_scale.UseVisualStyleBackColor = true;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(1145, 750);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(191, 17);
-            this.label13.TabIndex = 2;
-            this.label13.Text = "Коэффициент уменьшения:";
-            // 
-            // numericUpDown_coef
-            // 
-            this.numericUpDown_coef.Location = new System.Drawing.Point(1342, 750);
-            this.numericUpDown_coef.Maximum = new decimal(new int[] {
-            50,
-            0,
-            0,
-            0});
-            this.numericUpDown_coef.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numericUpDown_coef.Name = "numericUpDown_coef";
-            this.numericUpDown_coef.Size = new System.Drawing.Size(63, 22);
-            this.numericUpDown_coef.TabIndex = 5;
-            this.numericUpDown_coef.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
             // trackBar_speedanimate
             // 
             this.trackBar_speedanimate.LargeChange = 10;
-            this.trackBar_speedanimate.Location = new System.Drawing.Point(1138, 795);
+            this.trackBar_speedanimate.Location = new System.Drawing.Point(803, 834);
             this.trackBar_speedanimate.Minimum = 1;
             this.trackBar_speedanimate.Name = "trackBar_speedanimate";
-            this.trackBar_speedanimate.Size = new System.Drawing.Size(277, 56);
+            this.trackBar_speedanimate.Size = new System.Drawing.Size(187, 56);
             this.trackBar_speedanimate.TabIndex = 9;
             this.trackBar_speedanimate.Value = 1;
             // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(1145, 775);
+            this.label14.Location = new System.Drawing.Point(660, 844);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(142, 17);
             this.label14.TabIndex = 8;
@@ -476,20 +488,32 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.radioButton_l4);
             this.groupBox1.Controls.Add(this.radioButton_l3);
             this.groupBox1.Controls.Add(this.radioButton_l2);
             this.groupBox1.Controls.Add(this.radioButton_l1);
-            this.groupBox1.Location = new System.Drawing.Point(16, 717);
+            this.groupBox1.Location = new System.Drawing.Point(16, 706);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(218, 110);
+            this.groupBox1.Size = new System.Drawing.Size(218, 157);
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Задания";
             // 
+            // radioButton_l4
+            // 
+            this.radioButton_l4.AutoSize = true;
+            this.radioButton_l4.Location = new System.Drawing.Point(6, 105);
+            this.radioButton_l4.Name = "radioButton_l4";
+            this.radioButton_l4.Size = new System.Drawing.Size(117, 21);
+            this.radioButton_l4.TabIndex = 2;
+            this.radioButton_l4.TabStop = true;
+            this.radioButton_l4.Text = "Лаб. раб. №6";
+            this.radioButton_l4.UseVisualStyleBackColor = true;
+            // 
             // radioButton_l3
             // 
             this.radioButton_l3.AutoSize = true;
-            this.radioButton_l3.Location = new System.Drawing.Point(6, 83);
+            this.radioButton_l3.Location = new System.Drawing.Point(6, 78);
             this.radioButton_l3.Name = "radioButton_l3";
             this.radioButton_l3.Size = new System.Drawing.Size(117, 21);
             this.radioButton_l3.TabIndex = 2;
@@ -500,7 +524,7 @@
             // radioButton_l2
             // 
             this.radioButton_l2.AutoSize = true;
-            this.radioButton_l2.Location = new System.Drawing.Point(6, 56);
+            this.radioButton_l2.Location = new System.Drawing.Point(6, 51);
             this.radioButton_l2.Name = "radioButton_l2";
             this.radioButton_l2.Size = new System.Drawing.Size(117, 21);
             this.radioButton_l2.TabIndex = 1;
@@ -511,7 +535,7 @@
             // radioButton_l1
             // 
             this.radioButton_l1.AutoSize = true;
-            this.radioButton_l1.Location = new System.Drawing.Point(6, 28);
+            this.radioButton_l1.Location = new System.Drawing.Point(6, 23);
             this.radioButton_l1.Name = "radioButton_l1";
             this.radioButton_l1.Size = new System.Drawing.Size(117, 21);
             this.radioButton_l1.TabIndex = 0;
@@ -519,25 +543,128 @@
             this.radioButton_l1.Text = "Лаб. раб. №1";
             this.radioButton_l1.UseVisualStyleBackColor = true;
             // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(911, 803);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(94, 17);
+            this.label15.TabIndex = 2;
+            this.label15.Text = "(лаб. 1, 4, 5):";
+            // 
+            // checkBox_rotate
+            // 
+            this.checkBox_rotate.AutoSize = true;
+            this.checkBox_rotate.Location = new System.Drawing.Point(1144, 754);
+            this.checkBox_rotate.Name = "checkBox_rotate";
+            this.checkBox_rotate.Size = new System.Drawing.Size(225, 21);
+            this.checkBox_rotate.TabIndex = 6;
+            this.checkBox_rotate.Text = "Вращать призму вокруг оси Z";
+            this.checkBox_rotate.UseVisualStyleBackColor = true;
+            this.checkBox_rotate.CheckedChanged += new System.EventHandler(this.checkBox_rotate_CheckedChanged);
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(1141, 728);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(100, 17);
+            this.label16.TabIndex = 2;
+            this.label16.Text = "Лаб. раб. №6:";
+            // 
+            // checkBox_segment
+            // 
+            this.checkBox_segment.AutoSize = true;
+            this.checkBox_segment.Location = new System.Drawing.Point(1144, 780);
+            this.checkBox_segment.Name = "checkBox_segment";
+            this.checkBox_segment.Size = new System.Drawing.Size(207, 21);
+            this.checkBox_segment.TabIndex = 6;
+            this.checkBox_segment.Text = "Удалять невидимые ребра";
+            this.checkBox_segment.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_axis
+            // 
+            this.checkBox_axis.AutoSize = true;
+            this.checkBox_axis.Location = new System.Drawing.Point(1144, 806);
+            this.checkBox_axis.Name = "checkBox_axis";
+            this.checkBox_axis.Size = new System.Drawing.Size(219, 21);
+            this.checkBox_axis.TabIndex = 6;
+            this.checkBox_axis.Text = "Показать координатные оси";
+            this.checkBox_axis.UseVisualStyleBackColor = true;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(993, 844);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(121, 17);
+            this.label17.TabIndex = 8;
+            this.label17.Text = "Смещение оси X:";
+            // 
+            // trackBar_X
+            // 
+            this.trackBar_X.LargeChange = 700;
+            this.trackBar_X.Location = new System.Drawing.Point(1111, 833);
+            this.trackBar_X.Maximum = 700;
+            this.trackBar_X.Minimum = 1;
+            this.trackBar_X.Name = "trackBar_X";
+            this.trackBar_X.Size = new System.Drawing.Size(136, 56);
+            this.trackBar_X.SmallChange = 0;
+            this.trackBar_X.TabIndex = 9;
+            this.trackBar_X.Value = 300;
+            this.trackBar_X.ValueChanged += new System.EventHandler(this.trackBar_X_ValueChanged);
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(1253, 844);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(21, 17);
+            this.label18.TabIndex = 8;
+            this.label18.Text = "Y:";
+            // 
+            // trackBar_Y
+            // 
+            this.trackBar_Y.LargeChange = 700;
+            this.trackBar_Y.Location = new System.Drawing.Point(1273, 833);
+            this.trackBar_Y.Maximum = 700;
+            this.trackBar_Y.Minimum = 1;
+            this.trackBar_Y.Name = "trackBar_Y";
+            this.trackBar_Y.Size = new System.Drawing.Size(139, 56);
+            this.trackBar_Y.SmallChange = 0;
+            this.trackBar_Y.TabIndex = 9;
+            this.trackBar_Y.Value = 300;
+            this.trackBar_Y.ValueChanged += new System.EventHandler(this.trackBar_Y_ValueChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1424, 845);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.trackBar_speedanimate);
-            this.Controls.Add(this.label14);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(1424, 878);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.trackBar_pen);
-            this.Controls.Add(this.checkBox_scale);
-            this.Controls.Add(this.checkBox_clear);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.trackBar_Y);
+            this.Controls.Add(this.trackBar_X);
+            this.Controls.Add(this.trackBar_speedanimate);
             this.Controls.Add(this.numericUpDown_x3);
+            this.Controls.Add(this.label18);
+            this.Controls.Add(this.label17);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.checkBox_axis);
+            this.Controls.Add(this.checkBox_segment);
+            this.Controls.Add(this.checkBox_rotate);
+            this.Controls.Add(this.checkBox_clear);
             this.Controls.Add(this.numericUpDown_x2);
             this.Controls.Add(this.numericUpDown_y3);
+            this.Controls.Add(this.checkBox_scale);
             this.Controls.Add(this.numericUpDown_y2);
+            this.Controls.Add(this.label16);
+            this.Controls.Add(this.label13);
             this.Controls.Add(this.numericUpDown_smax);
-            this.Controls.Add(this.numericUpDown_smin);
             this.Controls.Add(this.numericUpDown_coef);
+            this.Controls.Add(this.numericUpDown_smin);
             this.Controls.Add(this.numericUpDown_rmax);
             this.Controls.Add(this.numericUpDown_rmin);
             this.Controls.Add(this.numericUpDown_y1);
@@ -550,7 +677,7 @@
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label11);
-            this.Controls.Add(this.label13);
+            this.Controls.Add(this.label15);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label1);
@@ -558,8 +685,10 @@
             this.Controls.Add(this.button_start);
             this.Controls.Add(this.panel_draw);
             this.Name = "Form1";
-            this.Text = "AKG BSUIR Lab 1 var 13, Lab 4 var 6, Lab 5 var 2 Marina Lynx";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "AKG BSUIR Lab 1 var 13, Lab 4 var 6, Lab 5 var 2, Lab 6 var 14 Marina Lynx";
             this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_coef)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_x1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_x2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_x3)).EndInit();
@@ -571,10 +700,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_rmax)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_smin)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_smax)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_coef)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_speedanimate)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_X)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_Y)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -619,6 +749,16 @@
         private System.Windows.Forms.RadioButton radioButton_l3;
         private System.Windows.Forms.RadioButton radioButton_l2;
         private System.Windows.Forms.RadioButton radioButton_l1;
+        private System.Windows.Forms.RadioButton radioButton_l4;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.CheckBox checkBox_rotate;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.CheckBox checkBox_segment;
+        private System.Windows.Forms.CheckBox checkBox_axis;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TrackBar trackBar_X;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.TrackBar trackBar_Y;
     }
 }
 

@@ -37,6 +37,31 @@ namespace Laba1
 
 
 
+        Point3D P1, P2, P3, P4, P5, P6, P7, P8;
+
+        //если меняем смещение оси X
+        private void trackBar_Y_ValueChanged(object sender, EventArgs e)
+        {
+            //displacement_y = trackBar_Y.Value;
+        }
+
+        //если меняем смещение оси X
+        private void trackBar_X_ValueChanged(object sender, EventArgs e)
+        {
+            //displacement_x = trackBar_X.Value;
+        }
+
+        //множество вершин в трехмерной системе
+        List<Point3D> Prisma = new List<Point3D>();
+        //угол вращения призмы
+        double angle;
+
+        //множество вершин в двумерной системе
+        List<PointF> Projection = new List<PointF>();
+
+        //смещения для осей для более раглядного представления лабы 6
+        int displacement_x;
+        int displacement_y;
 
 
         public Form1()
@@ -44,13 +69,16 @@ namespace Laba1
             InitializeComponent();
         }
 
-      
+        private void checkBox_rotate_CheckedChanged(object sender, EventArgs e)
+        {
+            angle = 0.0;
+        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             //связываем панель рисования с виджетом на экране
             gPanel = panel_draw.CreateGraphics();
-            
+
 
             //значения координат точек треугольника по-умолчанию
             numericUpDown_x1.Value = 100;
@@ -72,11 +100,50 @@ namespace Laba1
 
             checkBox_scale.Checked = true;
 
+            //вращать призму?
+            checkBox_rotate.Checked = true;
+
+            //удалять невидимые рёбра?
+            checkBox_segment.Checked = true;
+
+            //рисовать оси?
+            checkBox_axis.Checked = false;
+
             trackBar_speedanimate.Value = 5;
 
             timer_start.Interval = 250 / trackBar_speedanimate.Value;
 
+            radioButton_l1.Checked = true;
+
+            displacement_x = 300;
+            displacement_y = 300;
+
             iter = 0;
+
+            //задаем координаты вершин призмы в трёхмерной системе для лаб. 6
+
+            P1 = new Point3D(250, 25, 10);
+            P2 = new Point3D(30, 25, 10);
+            P3 = new Point3D(30, 200, 10);
+            P4 = new Point3D(250, 200, 10);
+            P5 = new Point3D(250, 25, 550);
+            P6 = new Point3D(30, 25, 550);
+            P7 = new Point3D(30, 200, 550);
+            P8 = new Point3D(250, 200, 550);
+
+            //первоначальный угол вращения
+            angle = 1.0;
+
+            //множество вершин в трехмерной системе
+            Prisma.Clear();
+            Prisma.Add(P1);
+            Prisma.Add(P2);
+            Prisma.Add(P3);
+            Prisma.Add(P4);
+            Prisma.Add(P5);
+            Prisma.Add(P6);
+            Prisma.Add(P7);
+            Prisma.Add(P8);
 
         }
         private void button_start_Click(object sender, EventArgs e)
@@ -188,7 +255,7 @@ namespace Laba1
 
         //рисуем линию
         private void DrawLine(int x1, int y1, int x2, int y2)
-        {           
+        {
             //т.к. координаты ординат панели перевернуты относительно человеческого восприятия - переворачиваем их
             //рисуем линию
             gPanel.DrawLine(pen, x1, panel_draw.Size.Height - y1, x2, panel_draw.Size.Height - y2);
@@ -225,7 +292,7 @@ namespace Laba1
             else
             {
                 if (checkBox_clear.Checked == false)
-                {       
+                {
                     gPanel.Clear(Color.White); //очищаем экран
                 }
 
@@ -341,71 +408,148 @@ namespace Laba1
 
                         //обнуляем результат
                         result.Clear();
-                        
+
                     }
 
 
                 }
 
-                //Хаотическое движение треугольника
-                if (iter % 10 == 0) //направление смещения меняется каждые 10 шагов
+                if (radioButton_l4.Checked == true)
                 {
-                    //получаем рандомное смещение от -2 до 2 (по условию) для следующего шага анимации
-                    Random rndx = new Random();
-                    ix = rndx.Next(rmin, (rmax + 1)); //смещение по оси абсцисс
-                    System.Threading.Thread.Sleep(25);
-                    Random rndy = new Random();
-                    iy = rndy.Next(smin, (smax + 1)); //смещение по оси ординат
-                }
-                
-                //меняем значения координат точек (смещаем треугольник) для следующего шага 
-                X1 += ix;
-                X2 += ix;
-                X3 += ix;
-                Y1 += iy;
-                Y2 += iy;
-                Y3 += iy;
+                    //строим изометрическую проекцию призмы с основанием прямоугольник - вар. 14
+                    //задаем координаты вершин призмы в трёхмерной системе (задали при инициализации формы)
 
-                if (checkBox_scale.Checked == true) //уменьшение масштаба
-                {
-                    if (coef <= 0) coef = 1; //проверка допустимого коэф
+                    //Point3D P1 = new Point3D(350, 250, 100);
+                    //Point3D P2 = new Point3D(200, 250, 100);
+                    //Point3D P3 = new Point3D(200, 400, 100);
+                    //Point3D P4 = new Point3D(350, 400, 100);
+                    //Point3D P5 = new Point3D(350, 250, 550);
+                    //Point3D P6 = new Point3D(200, 250, 550);
+                    //Point3D P7 = new Point3D(200, 400, 550);
+                    //Point3D P8 = new Point3D(350, 400, 550);
 
-                    //меняем масштаб меньше на 1/30 (или как настроим) треугольника для следующего шага
-                    //находим координаты центра треугольника
-                    double divisionx = (X1 + X2 + X3) / 3;
-                    Xcentre = (int)Math.Ceiling(divisionx); //округляем до верхнего целочисленного
-                    double divisiony = (Y1 + Y2 + Y3) / 3;
-                    Ycentre = (int)Math.Ceiling(divisiony);
+                    //задаем матрицу преобразования
+                    // |0.71  0.41  0  |
+                    // |0     0.82  0  |
+                    // |0.71  -0.41 0  |
 
-                    //MessageBox.Show(Xcentre.ToString());
+                    List<double> Matrix = new List<double> {
+                        0.71, 0.41, 0,
+                        0, 0.82, 0,
+                        0.71, -0.41, 0
+                    };
 
-                    //находим смещения координат для уменьшения масштаба
-                    double j = (X1 - Xcentre) / coef;
-                    offsetx1 = (int)Math.Round(j);
-                    j = (X2 - Xcentre) / coef;
-                    offsetx2 = (int)Math.Round(j);
-                    j = (X3 - Xcentre) / coef;
-                    offsetx3 = (int)Math.Round(j);
-                    j = (Y1 - Ycentre) / coef;
-                    offsety1 = (int)Math.Round(j);
-                    j = (Y2 - Ycentre) / coef;
-                    offsety2 = (int)Math.Round(j);
-                    j = (Y3 - Ycentre) / coef;
-                    offsety3 = (int)Math.Round(j);
 
-                    //координаты треугольника с уменьшенным на 1/coef масштабом: 
-                    X1 = X1 - offsetx1;
-                    X2 = X2 - offsetx2;
-                    X3 = X3 - offsetx3;
-                    Y1 = Y1 - offsety1;
-                    Y2 = Y2 - offsety2;
-                    Y3 = Y3 - offsety3;
+                    displacement_x = trackBar_X.Value;
+                    displacement_y = trackBar_Y.Value;
 
-                    //если размерность кооэффициента мастабирования превышает масштаб фигуры, то уменьшаем коэф для дальнейшего уменьшения фигуры
-                    if ((coef < iter) && (coef != 1))
+                    if (checkBox_axis.Checked == true)
                     {
-                        coef = (int)coef / 2;
-                        iter = 0;
+                        pen = new Pen(Color.Black, 1); //настраиваем перо
+                                                       //рисуем координатные оси для наглядности
+                        DrawLine(displacement_x, displacement_y, displacement_x, panel_draw.Size.Height - 20); //ось Х
+                        DrawLine(displacement_x, displacement_y, panel_draw.Size.Width - 100, displacement_y); //Y
+                        //DrawLine(displacement_x - 300, displacement_y - 300, displacement_x + 300, displacement_y + 300); //Z
+                        string strX = "X", strY = "Y";
+                        Font drawFont = new Font("Arial", 16);
+                        SolidBrush drawBrush = new SolidBrush(Color.Black);
+                        StringFormat drawFormat = new StringFormat();
+                        gPanel.DrawString(strX, drawFont, drawBrush, (float)displacement_x - 30, 20.0F, drawFormat);
+                        gPanel.DrawString(strY, drawFont, drawBrush, (float)(panel_draw.Size.Width - 100), (float)(panel_draw.Size.Height - displacement_y + 10), drawFormat);
+                        drawFont.Dispose();
+                        drawBrush.Dispose();
+                    }
+
+
+                    pen = new Pen(Color.DarkKhaki, penWidth); //настраиваем перо
+
+                    if (checkBox_rotate.Checked == true) //вращаем призму вокруг Z
+                    {
+
+                        Projection = GetIsometricPointsWithRotation(Prisma, Matrix, angle);
+
+
+                        angle = angle + 1.0;
+                        if (angle > 360.0) angle = 0;
+                    }
+                    else
+                    {
+                        //множество вершин в двумерной системе
+                        Projection = GetIsometricPoints(Prisma, Matrix);
+                    }
+
+                    if (checkBox_segment.Checked == true) //удаляем невидимые ребра, рисуем
+                    {
+                        DrawProjectionSegment(Projection);
+                    }
+                    else
+                    {
+                        DrawProjection(Projection); //выводим без удаления невидимых ребер
+                    }
+
+                }
+                else
+                {
+                    //Хаотическое движение треугольника
+                    if (iter % 10 == 0) //направление смещения меняется каждые 10 шагов
+                    {
+                        //получаем рандомное смещение от -2 до 2 (по условию) для следующего шага анимации
+                        Random rndx = new Random();
+                        ix = rndx.Next(rmin, (rmax + 1)); //смещение по оси абсцисс
+                        System.Threading.Thread.Sleep(25);
+                        Random rndy = new Random();
+                        iy = rndy.Next(smin, (smax + 1)); //смещение по оси ординат
+                    }
+
+                    //меняем значения координат точек (смещаем треугольник) для следующего шага 
+                    X1 += ix;
+                    X2 += ix;
+                    X3 += ix;
+                    Y1 += iy;
+                    Y2 += iy;
+                    Y3 += iy;
+
+                    if (checkBox_scale.Checked == true) //уменьшение масштаба
+                    {
+                        if (coef <= 0) coef = 1; //проверка допустимого коэф
+
+                        //меняем масштаб меньше на 1/30 (или как настроим) треугольника для следующего шага
+                        //находим координаты центра треугольника
+                        double divisionx = (X1 + X2 + X3) / 3;
+                        Xcentre = (int)Math.Ceiling(divisionx); //округляем до верхнего целочисленного
+                        double divisiony = (Y1 + Y2 + Y3) / 3;
+                        Ycentre = (int)Math.Ceiling(divisiony);
+
+                        //MessageBox.Show(Xcentre.ToString());
+
+                        //находим смещения координат для уменьшения масштаба
+                        double j = (X1 - Xcentre) / coef;
+                        offsetx1 = (int)Math.Round(j);
+                        j = (X2 - Xcentre) / coef;
+                        offsetx2 = (int)Math.Round(j);
+                        j = (X3 - Xcentre) / coef;
+                        offsetx3 = (int)Math.Round(j);
+                        j = (Y1 - Ycentre) / coef;
+                        offsety1 = (int)Math.Round(j);
+                        j = (Y2 - Ycentre) / coef;
+                        offsety2 = (int)Math.Round(j);
+                        j = (Y3 - Ycentre) / coef;
+                        offsety3 = (int)Math.Round(j);
+
+                        //координаты треугольника с уменьшенным на 1/coef масштабом: 
+                        X1 = X1 - offsetx1;
+                        X2 = X2 - offsetx2;
+                        X3 = X3 - offsetx3;
+                        Y1 = Y1 - offsety1;
+                        Y2 = Y2 - offsety2;
+                        Y3 = Y3 - offsety3;
+
+                        //если размерность кооэффициента мастабирования превышает масштаб фигуры, то уменьшаем коэф для дальнейшего уменьшения фигуры
+                        if ((coef < iter) && (coef != 1))
+                        {
+                            coef = (int)coef / 2;
+                            iter = 0;
+                        }
                     }
                 }
 
@@ -415,7 +559,7 @@ namespace Laba1
 
         //функция возвращает двоичный код Сазерленда-Коуэна типа xxxx
         //получает координаты точки x и y, и 4-ре ограничения окна отсечения left, right, bottom, top
-        private int Code(int x, int y, int left, int right, int bottom, int top) 
+        private int Code(int x, int y, int left, int right, int bottom, int top)
         {
             int c = 0; //0000
             if (x < left)
@@ -456,7 +600,7 @@ namespace Laba1
             if (C1 == 0 && C2 != 0) flag2 = true;
             if (C1 != 0 && C2 == 0) flag3 = true;
             if (!flag1 && !flag2 && !flag3) flag4 = true;
-           
+
             while (C1 != 0 || C2 != 0)//?P1x,P1y?,?P2x,P2y??  //пока не находим точки пересечения
             {
                 if ((C1 & C2) != 0)   // побитовое И  -отрезок не пересекает окно
@@ -581,7 +725,7 @@ namespace Laba1
             int y1 = (int)Math.Round(A.Y);
             int y2 = (int)Math.Round(B.Y);
             DrawLine(x1, y1, x2, y2);
-        } 
+        }
 
         //возвращаем Segment по полученным целочисленным координатам отрезка
         private Segment GetSegmentFromLine(int x1, int y1, int x2, int y2)
@@ -600,6 +744,154 @@ namespace Laba1
             foreach (Segment segment in listSegments)
             {
                 DrawLinePointF(segment.A, segment.B);
+            }
+        }
+
+
+        //изометрическая проекция, вспомогательные функции
+
+        //функция возвращает список точек в двумерной системе координат, являющихся точками изометрической проекции призмы
+        // принимает список вершин призмы и матрицу преобразования
+        private List<PointF> GetIsometricPoints(List<Point3D> listVertex3D, List<double> listMatrix)
+        {
+            List<PointF> listVertex2D = new List<PointF>();
+            PointF point = new PointF();
+
+            foreach (Point3D vertex in listVertex3D)
+            {
+                point.X = (float)(vertex.X * listMatrix[0] + vertex.Y * listMatrix[3] + vertex.Z * listMatrix[6]);
+                point.Y = (float)(vertex.X * listMatrix[1] + vertex.Y * listMatrix[4] + vertex.Z * listMatrix[7]);
+                listVertex2D.Add(point);
+            }
+            return listVertex2D;
+        }
+
+        //функция возвращает список точек в двумерной системе координат, являющихся точками изометрической проекции призмы
+        //функция фращает призму относительно оси Z на данный угол
+        // принимает список вершин призмы, матрицу преобразования и угол вращения
+        private List<PointF> GetIsometricPointsWithRotation(List<Point3D> listVertex3D, List<double> listMatrix, double angle)
+        {
+            List<PointF> listVertex2D = new List<PointF>();
+            PointF point = new PointF();
+            List<Point3D> newList3D = new List<Point3D>();
+            Point3D newPoint = new Point3D();
+
+            double grad = Math.PI * angle / 180.0;
+            double sina = Math.Sin(grad);
+            double cosa = Math.Cos(grad);
+
+            //поворачиваем на угол angle
+            foreach (Point3D vertex in listVertex3D)
+            {
+                newPoint.X = vertex.X * cosa - vertex.Y * sina;
+                newPoint.Y = vertex.X * sina + vertex.Y * cosa;
+                newPoint.Z = vertex.Z;
+
+                newList3D.Add(newPoint);
+            }
+
+            //строим двумерную проволочную модель
+            foreach (Point3D vertex in newList3D)
+            {
+                point.X = (float)(vertex.X * listMatrix[0] + vertex.Y * listMatrix[3] + vertex.Z * listMatrix[6]);
+                point.Y = (float)(vertex.X * listMatrix[1] + vertex.Y * listMatrix[4] + vertex.Z * listMatrix[7]);
+                listVertex2D.Add(point);
+            }
+            return listVertex2D;
+        }
+
+        //рисуем проекцию
+        private void DrawProjection(List<PointF> listPoints)
+        {
+
+            //делаем смещение чтобы поместть начало координат ближе к центру
+            //таким образом более наглядно будет показываться вращение относительно оси Z
+
+            if (listPoints.Count < 8) return;
+            DrawLinePointFDisplacement(listPoints[0], listPoints[1], displacement_x, displacement_y);
+            DrawLinePointFDisplacement(listPoints[1], listPoints[2], displacement_x, displacement_y);
+            DrawLinePointFDisplacement(listPoints[2], listPoints[3], displacement_x, displacement_y);
+            DrawLinePointFDisplacement(listPoints[3], listPoints[0], displacement_x, displacement_y);
+            DrawLinePointFDisplacement(listPoints[4], listPoints[5], displacement_x, displacement_y);
+            DrawLinePointFDisplacement(listPoints[5], listPoints[6], displacement_x, displacement_y);
+            DrawLinePointFDisplacement(listPoints[6], listPoints[7], displacement_x, displacement_y);
+            DrawLinePointFDisplacement(listPoints[7], listPoints[4], displacement_x, displacement_y);
+            DrawLinePointFDisplacement(listPoints[0], listPoints[4], displacement_x, displacement_y);
+            DrawLinePointFDisplacement(listPoints[1], listPoints[5], displacement_x, displacement_y);
+            DrawLinePointFDisplacement(listPoints[2], listPoints[6], displacement_x, displacement_y);
+            DrawLinePointFDisplacement(listPoints[3], listPoints[7], displacement_x, displacement_y);
+        }
+
+        private void DrawLinePointFDisplacement(PointF A, PointF B, int dis_x, int dis_y)
+        {
+            int x1 = (int)Math.Round(A.X) + dis_x;
+            int x2 = (int)Math.Round(B.X) + dis_x;
+            int y1 = (int)Math.Round(A.Y) + dis_y;
+            int y2 = (int)Math.Round(B.Y) + dis_y;
+            DrawLine(x1, y1, x2, y2);
+        }
+
+        //рисуем проекцию и удаляем невидимые рёбра
+        private void DrawProjectionSegment(List<PointF> listPoints)
+        {
+            //делим призму на шесть граней
+            Polygon polygon1 = new Polygon(new List<PointF> { listPoints[0], listPoints[1], listPoints[2], listPoints[3] }); //P1 P2 P3 P4
+            Polygon polygon2 = new Polygon(new List<PointF> { listPoints[3], listPoints[7], listPoints[4], listPoints[0] }); //P1 P5 P8 P4
+            Polygon polygon3 = new Polygon(new List<PointF> { listPoints[0], listPoints[4], listPoints[5], listPoints[1] }); //P1 P5 P6 P2
+            Polygon polygon4 = new Polygon(new List<PointF> { listPoints[1], listPoints[5], listPoints[6], listPoints[2] }); //P2 P6 P7 P3
+            Polygon polygon5 = new Polygon(new List<PointF> { listPoints[2], listPoints[6], listPoints[7], listPoints[3] }); //P4 P8 P7 P3
+            Polygon polygon6 = new Polygon(new List<PointF> { listPoints[7], listPoints[6], listPoints[5], listPoints[4] }); //P5 P6 P7 P8
+
+            //грань фронтальная true или тыльная false? Polygon.isConvex
+            //если ребро принадлежит двум тыльным граням, то оно невидимо - не рисуем его
+            //иначе - рисуем
+            if (polygon1.IsConvex || polygon2.IsConvex) //если ни одна ни вторая грань не тыльныя - рисуем
+            {
+                DrawLinePointFDisplacement(listPoints[3], listPoints[0], displacement_x, displacement_y);
+            }
+            if (polygon1.IsConvex || polygon3.IsConvex)
+            {
+                DrawLinePointFDisplacement(listPoints[0], listPoints[1], displacement_x, displacement_y);
+            }
+            if (polygon1.IsConvex || polygon4.IsConvex)
+            {
+                DrawLinePointFDisplacement(listPoints[1], listPoints[2], displacement_x, displacement_y);
+            }
+            if (polygon1.IsConvex || polygon5.IsConvex)
+            {
+                DrawLinePointFDisplacement(listPoints[2], listPoints[3], displacement_x, displacement_y);
+            }
+            if (polygon2.IsConvex || polygon3.IsConvex)
+            {
+                DrawLinePointFDisplacement(listPoints[0], listPoints[4], displacement_x, displacement_y);
+            }
+            if (polygon3.IsConvex || polygon4.IsConvex)
+            {
+                DrawLinePointFDisplacement(listPoints[1], listPoints[5], displacement_x, displacement_y);
+            }
+            if (polygon4.IsConvex || polygon5.IsConvex)
+            {
+                DrawLinePointFDisplacement(listPoints[2], listPoints[6], displacement_x, displacement_y);
+            }
+            if (polygon5.IsConvex || polygon2.IsConvex)
+            {
+                DrawLinePointFDisplacement(listPoints[3], listPoints[7], displacement_x, displacement_y);
+            }
+            if (polygon2.IsConvex || polygon6.IsConvex)
+            {
+                DrawLinePointFDisplacement(listPoints[7], listPoints[4], displacement_x, displacement_y);
+            }
+            if (polygon3.IsConvex || polygon6.IsConvex)
+            {
+                DrawLinePointFDisplacement(listPoints[4], listPoints[5], displacement_x, displacement_y);
+            }
+            if (polygon4.IsConvex || polygon6.IsConvex)
+            {
+                DrawLinePointFDisplacement(listPoints[5], listPoints[6], displacement_x, displacement_y);
+            }
+            if (polygon5.IsConvex || polygon6.IsConvex)
+            {
+                DrawLinePointFDisplacement(listPoints[6], listPoints[7], displacement_x, displacement_y);
             }
         }
 
