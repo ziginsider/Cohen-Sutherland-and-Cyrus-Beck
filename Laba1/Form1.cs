@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,9 +15,9 @@ namespace Laba1
     {
         Graphics gPanel; //панель на которой будем рисовать фигуры
         Pen pen; //перо рисования
-        Int32 X1, X2, X3, Y1, Y2, Y3; //координаты точек треугольника
-        Int32 Xcentre, Ycentre; //координаты центра треугольника
-        Int32 offsetx1, offsetx2, offsetx3, offsety1, offsety2, offsety3; //смещения координат при изменении масштаба
+        Int32 X1, X2, X3, X4, Y1, Y2, Y3, Y4; //координаты точек четырехугольника
+        Int32 Xcentre, Ycentre; //координаты центра четырехугольника
+        Int32 offsetx1, offsetx2, offsetx3, offsetx4, offsety1, offsety2, offsety3, offsety4; //смещения координат при изменении масштаба
         int coef = 30; //коэффициент изменения масштаба
         int coef_const; //коеф неизменяемый
         int rmin, rmax, smin, smax; //диапазоны смещения при хаотическом движение
@@ -34,10 +35,65 @@ namespace Laba1
         int left1 = 200, right1 = 400, bottom1 = 100, top1 = 500;
         int left2 = 400, right2 = 600, bottom2 = 100, top2 = 300;
         int left3 = 600, right3 = 800, bottom3 = 100, top3 = 500;
+        int l1, r1, b1, t1, l2, r2, b2, t2, l3, r3, b3, t3, l4, r4, b4, t4, l5, r5, b5, t5;
 
+        Color background_color;
+        Color figure1_color;
+        Color figure2_color;
 
+        SolidBrush brush;
 
         Point3D P1, P2, P3, P4, P5, P6, P7, P8;
+
+        //List<Point> 
+
+        private void button_color_figure1_Click(object sender, EventArgs e)
+        {
+            if (colorDialog2.ShowDialog() == DialogResult.OK) //открываем окно выбора цвета
+            {
+                //button1.BackColor = colorDialog1.Color;
+                button_color_figure1.ForeColor = colorDialog2.Color; //цвет шрифта кнопки уст. согласно выбранного цвета
+                figure1_color = colorDialog2.Color;
+            }
+        }
+
+        private void button_color_figure2_Click(object sender, EventArgs e)
+        {
+            if (colorDialog3.ShowDialog() == DialogResult.OK)
+            {
+                //button1.BackColor = colorDialog1.Color;
+                button_color_figure2.ForeColor = colorDialog3.Color;
+                figure2_color = colorDialog3.Color;
+            }
+        }
+
+        private void radioButton_l1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton_l1.Checked == true) button_color_figure2.Enabled = false;
+            else button_color_figure2.Enabled = true;
+        }
+
+        private void radioButton_l4_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton_l4.Checked == true) button_color_figure2.Enabled = false;
+            else button_color_figure2.Enabled = true;
+        }
+
+        private void button_color_backgound_Click(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                //button1.BackColor = colorDialog1.Color;
+                button_color_backgound.ForeColor = colorDialog1.Color;
+                background_color = colorDialog1.Color; //устанавливаем цвет фона
+            }
+        }
+
+        private void checkBox_segment_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_segment.Checked == true) checkBox_punktir.Enabled = false;
+            else checkBox_punktir.Enabled = true;
+        }
 
         //если меняем смещение оси X
         private void trackBar_Y_ValueChanged(object sender, EventArgs e)
@@ -79,7 +135,14 @@ namespace Laba1
             //связываем панель рисования с виджетом на экране
             gPanel = panel_draw.CreateGraphics();
 
+            background_color = Color.White;
+            figure1_color = Color.Blue;
+            figure2_color = Color.Red;
 
+            gPanel.Clear(background_color);
+
+            button_color_figure2.Enabled = false;
+            
             //значения координат точек треугольника по-умолчанию
             numericUpDown_x1.Value = 100;
             numericUpDown_y1.Value = 300;
@@ -89,6 +152,9 @@ namespace Laba1
 
             numericUpDown_x3.Value = 400;
             numericUpDown_y3.Value = 250;
+
+            numericUpDown_x4.Value = 500;
+            numericUpDown_y4.Value = 150;
 
             //значения диапазона рандомных смещений фигуры (дельтаX и дельтаY принимаем за 1 т.е. одно деление шкалы панели рисования)
             numericUpDown_rmin.Value = -2;
@@ -106,6 +172,9 @@ namespace Laba1
             //удалять невидимые рёбра?
             checkBox_segment.Checked = true;
 
+            //рисовать их пунктиром
+            checkBox_punktir.Checked = true;
+
             //рисовать оси?
             checkBox_axis.Checked = false;
 
@@ -122,14 +191,14 @@ namespace Laba1
 
             //задаем координаты вершин призмы в трёхмерной системе для лаб. 6
 
-            P1 = new Point3D(250, 25, 10);
-            P2 = new Point3D(30, 25, 10);
-            P3 = new Point3D(30, 200, 10);
-            P4 = new Point3D(250, 200, 10);
-            P5 = new Point3D(250, 25, 550);
-            P6 = new Point3D(30, 25, 550);
-            P7 = new Point3D(30, 200, 550);
-            P8 = new Point3D(250, 200, 550);
+            P1 = new Point3D(150, 0, 10);
+            P2 = new Point3D(0, 0, 10);
+            P3 = new Point3D(0, 200, 10);
+            P4 = new Point3D(150, 200, 10);
+            P5 = new Point3D(150, 0, 400);
+            P6 = new Point3D(0, 0, 400);
+            P7 = new Point3D(0, 200, 400);
+            P8 = new Point3D(150, 200, 400);
 
             //первоначальный угол вращения
             angle = 1.0;
@@ -145,16 +214,43 @@ namespace Laba1
             Prisma.Add(P7);
             Prisma.Add(P8);
 
+            l1 = 0;
+            r1 = left1;
+            t1 = panel_draw.Height;
+            b1 = 0;
+
+            l2 = left1;
+            r2 = right3;
+            t2 = panel_draw.Height;
+            b2 = top1;
+
+            l3 = right3;
+            r3 = panel_draw.Width;
+            t3 = panel_draw.Height;
+            b3 = 0;
+
+            l4 = left1;
+            r4 = right3;
+            t4 = bottom1;
+            b4 = 0;
+
+            l5 = left2;
+            r5 = right2;
+            t5 = top1;
+            b5 = top2;
+
         }
         private void button_start_Click(object sender, EventArgs e)
         {
-            //заносим первоначальные значения точек треугольника
+            //заносим первоначальные значения точек 4угольника
             X1 = (int)numericUpDown_x1.Value;
             X2 = (int)numericUpDown_x2.Value;
             X3 = (int)numericUpDown_x3.Value;
+            X4 = (int)numericUpDown_x4.Value;
             Y1 = (int)numericUpDown_y1.Value;
             Y2 = (int)numericUpDown_y2.Value;
             Y3 = (int)numericUpDown_y3.Value;
+            Y4 = (int)numericUpDown_y4.Value;
 
             //заносим диапазоны смщения хаотического движения фигуры
             rmin = (int)numericUpDown_rmin.Value;
@@ -185,6 +281,8 @@ namespace Laba1
             numericUpDown_y1.Enabled = false;
             numericUpDown_y2.Enabled = false;
             numericUpDown_y3.Enabled = false;
+            numericUpDown_x4.Enabled = false;
+            numericUpDown_y4.Enabled = false;
 
             numericUpDown_rmax.Enabled = false;
             numericUpDown_rmin.Enabled = false;
@@ -204,11 +302,11 @@ namespace Laba1
 
             button_stop.Enabled = true;
 
-            gPanel.Clear(Color.White); //очищаем экран
+            gPanel.Clear(background_color); //очищаем экран
 
             //настраиваем перо
             int penWidth = (int)trackBar_pen.Value;
-            pen = new Pen(Color.Green, penWidth);
+            pen = new Pen(figure1_color, penWidth);
 
             //коэффициент уменьшения масштаба (каждый шаг на 1/coef меньше)
             coef = (int)numericUpDown_coef.Value;
@@ -233,6 +331,8 @@ namespace Laba1
             numericUpDown_y1.Enabled = true;
             numericUpDown_y2.Enabled = true;
             numericUpDown_y3.Enabled = true;
+            numericUpDown_x4.Enabled = true;
+            numericUpDown_y4.Enabled = true;
 
             numericUpDown_rmax.Enabled = true;
             numericUpDown_rmin.Enabled = true;
@@ -269,6 +369,14 @@ namespace Laba1
             DrawLine(x3, y3, x1, y1);
         }
 
+        private void DrawQuatro(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4)
+        {
+            DrawLine(x1, y1, x2, y2);
+            DrawLine(x2, y2, x3, y3);
+            DrawLine(x3, y3, x4, y4);
+            DrawLine(x4, y4, x1, y1);
+        }
+
         //рисуем прямоугольник по 4-м ограничениям
         private void DrawRectangle(int xmin, int xmax, int ymin, int ymax)
         {
@@ -293,7 +401,7 @@ namespace Laba1
             {
                 if (checkBox_clear.Checked == false)
                 {
-                    gPanel.Clear(Color.White); //очищаем экран
+                    gPanel.Clear(background_color); //очищаем экран
                 }
 
                 int penWidth = (int)trackBar_pen.Value;
@@ -301,38 +409,101 @@ namespace Laba1
                 if (radioButton_l1.Checked == true)
                 {
                     //Задание 1
-                    //рисуем треугольник
-                    pen = new Pen(Color.Blue, penWidth);
-                    DrawTriange(X1, Y1, X2, Y2, X3, Y3);
+                    //рисуем четырехугольник
+                    pen = new Pen(figure1_color, penWidth);
+                    //DrawTriange(X1, Y1, X2, Y2, X3, Y3);
+
+                    //закрашиваем четырехугольник
+                    brush = new SolidBrush(figure1_color);
+                    Point[] trianglePoints = { new Point(X1, panel_draw.Size.Height - Y1),
+                        new Point(X2, panel_draw.Size.Height - Y2),
+                        new Point(X3, panel_draw.Size.Height - Y3),
+                        new Point(X4, panel_draw.Size.Height - Y4)};
+                    gPanel.FillPolygon(brush, trianglePoints);
                 }
 
-                if (radioButton_l2.Checked == true)
+                if (radioButton_l2.Checked == true || radioButton_l2versus.Checked == true)
                 {
                     //начинаем алгоритм Сазерленда-Коуэна:
 
                     //рисуем наше отсекающее окно состоящее из трёх прямоугольников (вариант f-6)
 
-                    pen = new Pen(Color.Red, penWidth);
+                    pen = new Pen(figure2_color, penWidth);
 
-                    DrawRectangle(left1, right1, bottom1, top1);
-                    DrawRectangle(left2, right2, bottom2, top2);
-                    DrawRectangle(left3, right3, bottom3, top3);
+                    DrawLine(left1, bottom1, left1, top1);
+                    DrawLine(left1, top1, right1, top1);
+                    DrawLine(right1, top1, left2, top2);
+                    DrawLine(left1, bottom1, right1, bottom1);
+                    DrawLine(left2, top2, right2, top2);
+                    DrawLine(left2, bottom2, right2, bottom2);
+                    DrawLine(right2, top2, left3, top3);
+                    DrawLine(left3, top3, right3, top3);
+                    DrawLine(right3, top3, right3, bottom3);
+                    DrawLine(left3, bottom3, right3, bottom3);
 
-                    //pen = new Pen(Color.Blue, penWidth);
-                    //DrawLine(100, 300, 600, 400);
+                    pen = new Pen(figure1_color, penWidth);
 
-                    pen = new Pen(Color.Green, penWidth);
+                    //отсечение отрезков четырехугольника методом Сазерленда-Коэна
+                    if (radioButton_l2.Checked == true) //внешнее отсечение
+                    {
+                        //Lauch_Suth(X1, Y1, X2, Y2);
+                        //Lauch_Suth(X3, Y3, X2, Y2);
+                        //Lauch_Suth(X1, Y1, X4, Y4);
+                        //Lauch_Suth(X4, Y4, X3, Y3);
+                        Lauch_Suth_Right(X1, Y1, X2, Y2);
+                        Lauch_Suth_Right(X3, Y3, X2, Y2);
+                        Lauch_Suth_Right(X1, Y1, X4, Y4);
+                        Lauch_Suth_Right(X4, Y4, X3, Y3);
 
-                    //отсечение отрезков треугольника методом Сазерленда-Коэна
-                    Lauch_Suth(X1, Y1, X2, Y2);
-                    Lauch_Suth(X3, Y3, X2, Y2);
-                    Lauch_Suth(X1, Y1, X3, Y3);
+
+
+                        //Point[] refresh = {new Point(0,0),
+                        //new Point(0,600),
+                        //new Point(1200, 600),
+                        //new Point(1200, 0)};
+
+                        //brush = new SolidBrush(background_color);
+                        //gPanel.FillPolygon(brush, refresh);
+
+                        //brush = new SolidBrush(figure2_color);
+                        //int yyy = panel_draw.Size.Height;
+                        //Point[] f2Points = {new Point(left1, yyy - bottom1),
+                        //                    new Point(left1, yyy - top1),
+                        //                    new Point(right1, yyy - top1),
+                        //                    new Point(right1, yyy - top2),
+                        //                    new Point(right2, yyy - top2),
+                        //                    new Point(left3, yyy - top3),
+                        //                    new Point(right3, yyy - top3),
+                        //                    new Point(right3, yyy - bottom3), };
+
+                        //SolidBrush brush2 = new SolidBrush(figure1_color);
+                        //Point[] trianglePoints = { new Point(X1, panel_draw.Size.Height - Y1),
+                        //new Point(X2, panel_draw.Size.Height - Y2),
+                        //new Point(X3, panel_draw.Size.Height - Y3) };
+
+                        //gPanel.FillPolygon(brush2, trianglePoints);
+                        //gPanel.FillPolygon(brush, f2Points);
+
+
+
+                        //buffer.Restore(state);
+
+
+
+                    }
+                    if (radioButton_l2versus.Checked == true) //внутреннее отсечение
+                    {
+                        Lauch_Suth_Versus(X1, Y1, X2, Y2);
+                        Lauch_Suth_Versus(X3, Y3, X2, Y2);
+                        Lauch_Suth_Versus(X1, Y1, X4, Y4);
+                        Lauch_Suth_Versus(X4, Y4, X3, Y3);
+                    }
                 }
-                if (radioButton_l3.Checked == true)
+                if (radioButton_l3.Checked == true || radioButton_l3versus.Checked == true)
                 {
                     //начинаем алгоритм отсечения Кируса-Бека 
                     //рисуем форму окна вариант b
-                    pen = new Pen(Color.Black, penWidth);
+                    pen = new Pen(figure2_color, penWidth);
 
                     PointF A1 = new PointF(400, 225);
                     PointF A2 = new PointF(450, 300);
@@ -373,7 +544,7 @@ namespace Laba1
 
                     //DrawLinePointF(Result[0].A, Result[0].B);
 
-                    pen = new Pen(Color.Crimson, penWidth); //настраиваем перо
+                    pen = new Pen(figure1_color, penWidth); //настраиваем перо
 
                     //разбиваем наш невыпуклый многоульник на несколько выпуклых: 7 треугольников и один шестигранник
                     List<Polygon> convexPolygons = new List<Polygon> {
@@ -386,34 +557,72 @@ namespace Laba1
                         new Polygon (new List<PointF> { A12, A2, A4, A6, A8, A10})
                     };
 
-                    //получаем три сегмента (три отрезка составляющие наш треугольник) которые нужно отсечь окном с исп. алг. Кируса-Бека
+                    //получаем три сегмента (три отрезка составляющие наш четырехугольник) которые нужно отсечь окном с исп. алг. Кируса-Бека
                     List<Segment> triangleSegments = new List<Segment>
                     {
                         GetSegmentFromLine(X1, Y1, X2, Y2),
                         GetSegmentFromLine(X2, Y2, X3, Y3),
-                        GetSegmentFromLine(X1, Y1, X3, Y3)
+                        GetSegmentFromLine(X1, Y1, X4, Y4),
+                        GetSegmentFromLine(X4, Y4, X3, Y3)
                     };
 
                     List<Segment> result = new List<Segment>(); //результат отсечения: сегменты
 
-                    //проходим по всем выпуклым многоугольникам составляющим наше окно и отсекаем отрезки составляющие треугольникв
-                    foreach (Polygon polygon in convexPolygons) //для каждого выпуклого многоугольника
+                    if (radioButton_l3.Checked == true) //для внутреннего отсечения
                     {
-                        //для каждого отсекаемого отрезка 
-                        //применяем алгоритм внутреннего отсечения окном Кируса-Бека
-                        result = polygon.CyrusBeckClip(triangleSegments);
 
-                        //рисуем отсеченные отрезки на экране
-                        DrawSegments(result);
+                        //проходим по всем выпуклым многоугольникам составляющим наше окно и отсекаем отрезки составляющие четырехугольник
+                        foreach (Polygon polygon in convexPolygons) //для каждого выпуклого многоугольника
+                        {
+                            //для каждого отсекаемого отрезка 
+                            //применяем алгоритм внутреннего отсечения окном Кируса-Бека
+                            result = polygon.CyrusBeckClip(triangleSegments);
 
-                        //обнуляем результат
-                        result.Clear();
+                            //рисуем отсеченные отрезки на экране
+                            DrawSegments(result);
+
+                            //обнуляем результат
+                            result.Clear();
+                        }
+                    } else if (radioButton_l3versus.Checked == true) //для внешнего отсечения
+                    {
+                        PointF G1 = new PointF(0, 0);
+                        PointF G2 = new PointF(0, 600);
+                        PointF G3 = new PointF(600, 600);
+                        PointF G4 = new PointF(900, 600);
+                        PointF G5 = new PointF(900, 0);
+                        PointF G6 = new PointF(600, 0);
+                        PointF G7 = new PointF(1200, 600);
+                        PointF G8 = new PointF(1200, 0);
+
+                        List<Polygon> convexPolygonsVersus = new List<Polygon> {
+                        new Polygon (new List<PointF> { G1, G2, A3, A2, A1 }),
+                        new Polygon (new List<PointF> { G2, G3, A5, A4, A3 }),
+                        new Polygon (new List<PointF> { G3, A5, A6, A7, G4 }),
+                        new Polygon (new List<PointF> { G5, A9, A8, A7, G4, G7, G8 }),
+                        new Polygon (new List<PointF> { G6, A11, A10, A9, G5 }),
+                        new Polygon (new List<PointF> { G1, A1, A12, A11, G6 }),
+                        };
+
+                        foreach (Polygon polygon in convexPolygonsVersus) //для каждого выпуклого многоугольника
+                        {
+                            //для каждого отсекаемого отрезка 
+                            //применяем алгоритм внутреннего отсечения окном Кируса-Бека
+                            result = polygon.CyrusBeckClip(triangleSegments);
+
+                            //рисуем отсеченные отрезки на экране
+                            DrawSegments(result);
+
+                            //обнуляем результат
+                            result.Clear();
+                        }
+
 
                     }
 
-
                 }
 
+                // 6 лаба:
                 if (radioButton_l4.Checked == true)
                 {
                     //строим изометрическую проекцию призмы с основанием прямоугольник - вар. 14
@@ -439,11 +648,11 @@ namespace Laba1
                         0.71, -0.41, 0
                     };
 
-
+                    //смещение осей для наглядности
                     displacement_x = trackBar_X.Value;
                     displacement_y = trackBar_Y.Value;
 
-                    if (checkBox_axis.Checked == true)
+                    if (checkBox_axis.Checked == true) //рисуем координатные оси
                     {
                         pen = new Pen(Color.Black, 1); //настраиваем перо
                                                        //рисуем координатные оси для наглядности
@@ -454,22 +663,22 @@ namespace Laba1
                         Font drawFont = new Font("Arial", 16);
                         SolidBrush drawBrush = new SolidBrush(Color.Black);
                         StringFormat drawFormat = new StringFormat();
-                        gPanel.DrawString(strX, drawFont, drawBrush, (float)displacement_x - 30, 20.0F, drawFormat);
-                        gPanel.DrawString(strY, drawFont, drawBrush, (float)(panel_draw.Size.Width - 100), (float)(panel_draw.Size.Height - displacement_y + 10), drawFormat);
+                        gPanel.DrawString(strY, drawFont, drawBrush, (float)displacement_x - 30, 20.0F, drawFormat);
+                        gPanel.DrawString(strX, drawFont, drawBrush, (float)(panel_draw.Size.Width - 100), (float)(panel_draw.Size.Height - displacement_y + 10), drawFormat);
                         drawFont.Dispose();
                         drawBrush.Dispose();
+                        
                     }
 
-
-                    pen = new Pen(Color.DarkKhaki, penWidth); //настраиваем перо
+                    if (penWidth == 1) penWidth = 2;
+                    pen = new Pen(figure1_color, penWidth); //настраиваем перо
 
                     if (checkBox_rotate.Checked == true) //вращаем призму вокруг Z
                     {
 
                         Projection = GetIsometricPointsWithRotation(Prisma, Matrix, angle);
 
-
-                        angle = angle + 1.0;
+                        angle = angle + 1.0; //каждый шаг - вращаем на 1 градус
                         if (angle > 360.0) angle = 0;
                     }
                     else
@@ -484,13 +693,13 @@ namespace Laba1
                     }
                     else
                     {
-                        DrawProjection(Projection); //выводим без удаления невидимых ребер
+                        DrawProjection(Projection); //рисуем без удаления невидимых ребер
                     }
 
                 }
                 else
                 {
-                    //Хаотическое движение треугольника
+                    //Хаотическое движение четырехугольника
                     if (iter % 10 == 0) //направление смещения меняется каждые 10 шагов
                     {
                         //получаем рандомное смещение от -2 до 2 (по условию) для следующего шага анимации
@@ -501,23 +710,68 @@ namespace Laba1
                         iy = rndy.Next(smin, (smax + 1)); //смещение по оси ординат
                     }
 
-                    //меняем значения координат точек (смещаем треугольник) для следующего шага 
-                    X1 += ix;
-                    X2 += ix;
-                    X3 += ix;
-                    Y1 += iy;
-                    Y2 += iy;
-                    Y3 += iy;
+                    //меняем значения координат точек (смещаем четырехугольник) для следующего шагаp
+                    //int border_x = panel_draw.Width;
+                    //int border_y = panel_draw.Height;
+
+                    //if (X1 + ix > 0 && X1+ ix  < border_x) 
+
+                    //    if (X2 + ix > 0 && X2 + ix < border_x)
+                    //        if (X3 + ix > 0 && X3 + ix < border_x)
+                    //            if (X4 + ix > 0 && X4 + ix < border_x)
+                    //                if (Y1 + iy > 100 && Y1 + iy < border_y - 80)
+                    //                    if (Y2 + iy > 100 && Y2 + iy < border_y - 80)
+                    //                        if (Y3 + iy > 100 && Y3 + iy < border_y - 80)
+                    //                            if (Y4 + iy > 100 && Y4 + iy < border_y - 80)
+                    //                        {
+                                                X1 += ix;
+                                                X2 += ix;
+                                                X3 += ix;
+                                                X4 += ix;
+                                                Y1 += iy;
+                                                Y2 += iy;
+                                                Y3 += iy;
+                                                Y4 += iy;
+                                            //}
+
 
                     if (checkBox_scale.Checked == true) //уменьшение масштаба
                     {
                         if (coef <= 0) coef = 1; //проверка допустимого коэф
 
-                        //меняем масштаб меньше на 1/30 (или как настроим) треугольника для следующего шага
-                        //находим координаты центра треугольника
-                        double divisionx = (X1 + X2 + X3) / 3;
+                        //меняем масштаб меньше на 1/30 (или как настроим) четырехугольника для следующего шага
+                        //находим координаты центра четырехугольника
+                        //double divisionx = (X1 + X2 + X3 + X4) / 4;
+                        //Xcentre = (int)Math.Ceiling(divisionx); //округляем до верхнего целочисленного
+                        //double divisiony = (Y1 + Y2 + Y3 + Y4) / 4;
+                        //Ycentre = (int)Math.Ceiling(divisiony);
+
+                        double abc_x = (X1 + X2 + X3) / 3;
+                        double abc_y = (Y1 + Y2 + Y3) / 3;
+                        double adc_x = (X1 + X4 + X3) / 3;
+                        double adc_y = (Y1 + Y4 + Y3) / 3;
+
+                        double ab = Math.Sqrt(Math.Pow((X2 - X1), 2.0) + Math.Pow((Y2 - Y1), 2.0));
+                        double bc = Math.Sqrt(Math.Pow((X3 - X2), 2.0) + Math.Pow((Y3 - Y2), 2.0));
+                        double ac = Math.Sqrt(Math.Pow((X3 - X1), 2.0) + Math.Pow((Y3 - Y1), 2.0));
+
+                        double p = (ab + bc + ac) / 2.0;
+
+                        double area_abc = Math.Sqrt(p * (p - ab) * (p - bc) * (p - ac));
+
+                        double ad = Math.Sqrt(Math.Pow((X4 - X1), 2.0) + Math.Pow((Y4 - Y1), 2.0));
+                        double dc = Math.Sqrt(Math.Pow((X3 - X4), 2.0) + Math.Pow((Y3 - Y4), 2.0));
+
+                        double p2 = (ad + dc + ac) / 2.0;
+
+                        double area_adc = Math.Sqrt(p2 * (p2 - ad) * (p2 - dc) * (p2 - ac));
+
+
+
+
+                        double divisionx = ((area_abc * abc_x) + (area_adc * adc_x)) / (area_abc + area_adc);
                         Xcentre = (int)Math.Ceiling(divisionx); //округляем до верхнего целочисленного
-                        double divisiony = (Y1 + Y2 + Y3) / 3;
+                        double divisiony = ((area_abc * abc_y) + (area_adc * adc_y)) / (area_abc + area_adc);
                         Ycentre = (int)Math.Ceiling(divisiony);
 
                         //MessageBox.Show(Xcentre.ToString());
@@ -529,20 +783,26 @@ namespace Laba1
                         offsetx2 = (int)Math.Round(j);
                         j = (X3 - Xcentre) / coef;
                         offsetx3 = (int)Math.Round(j);
+                        j = (X4 - Xcentre) / coef;
+                        offsetx4 = (int)Math.Round(j);
                         j = (Y1 - Ycentre) / coef;
                         offsety1 = (int)Math.Round(j);
                         j = (Y2 - Ycentre) / coef;
                         offsety2 = (int)Math.Round(j);
                         j = (Y3 - Ycentre) / coef;
                         offsety3 = (int)Math.Round(j);
+                        j = (Y4 - Ycentre) / coef;
+                        offsety4 = (int)Math.Round(j);
 
                         //координаты треугольника с уменьшенным на 1/coef масштабом: 
                         X1 = X1 - offsetx1;
                         X2 = X2 - offsetx2;
                         X3 = X3 - offsetx3;
+                        X4 = X4 - offsetx4;
                         Y1 = Y1 - offsety1;
                         Y2 = Y2 - offsety2;
                         Y3 = Y3 - offsety3;
+                        Y4 = Y4 - offsety4;
 
                         //если размерность кооэффициента мастабирования превышает масштаб фигуры, то уменьшаем коэф для дальнейшего уменьшения фигуры
                         if ((coef < iter) && (coef != 1))
@@ -581,7 +841,7 @@ namespace Laba1
             return c;
         }
 
-        //Функция алгоритма отсечения Сазерленда-Коуэна
+        //Функция алгоритма отсечения Сазерленда-Коуэна для ВНЕШНЕГО отсечения
         //Отсекает отрезок (x1,y1)(x2,y2) окном с ограничениями по сторонам left, right, bottom, top
         //coun - порядковый номер прохода т.к. у нас три окна
         private void CohenSutherland(int x1, int y1, int x2, int y2, int left, int right, int bottom, int top, int count)
@@ -712,11 +972,90 @@ namespace Laba1
             }
         }
 
+        //Функция алгоритма отсечения Сазерленда-Коуэна для ВНУТРЕННЕГО отсечения
+        //Отсекает отрезок (x1,y1)(x2,y2) окном с ограничениями по сторонам left, right, bottom, top
+        private void CohenSutherlandVersus(int x1, int y1, int x2, int y2, int left, int right, int bottom, int top)
+        {
+            int C1 = Code(x1, y1, left, right, bottom, top), C2 = Code(x2, y2, left, right, bottom, top); //коды точек отсекаемого отрезка
+            int C;
+            int Px = 0, Py = 0;//  пересечения
+
+            while (C1 != 0 || C2 != 0)//?P1x,P1y?,?P2x,P2y??  //пока не находим точки пересечения
+            {
+                if ((C1 & C2) != 0)   // побитовое И  -отрезок не пересекает окно
+                {
+                    x1 = 0;
+                    y1 = 0;
+                    x2 = 0;
+                    y2 = 0;
+                    break;
+                }
+                C = C1;
+                if (C1 == 0)//по крайней мере одна точка находится вне прямоугольника   
+                {
+                    C = C2;
+                }
+
+                //находим точку пересечения y = y0 + slope * (x - x0), x = x0 + (1 / slope) * (y - y0)
+                if ((C & CodeLeft) != 0)
+                {
+                    Px = left; //точка слева от окна
+                    Py = y1 + (int)(Convert.ToDouble(y2 - y1) / (x2 - x1) * (left - x1));
+                }
+                else if ((C & CodeRight) != 0)//   
+                {
+                    Px = right; //точка справа от окна
+                    Py = y1 + (int)(Convert.ToDouble(y2 - y1) / (x2 - x1) * (right - x1));
+                }
+                else if ((C & CodeTop) != 0)//  
+                {
+                    Py = top; //точка выше окна
+                    Px = x1 + (int)(Convert.ToDouble(x2 - x1) / (y2 - y1) * (top - y1));
+                }
+                else if ((C & CodeButtom) != 0)//  
+                {
+                    Py = bottom; //точка ниже окна
+                    Px = x1 + (int)(Convert.ToDouble(x2 - x1) / (y2 - y1) * (bottom - y1));
+                }
+
+                if (C == C1) //находим точки пересечения с продолжением и готовимся к следующему проходу  
+                {
+                    x1 = Px;
+                    y1 = Py;
+                    C1 = Code(x1, y1, left, right, bottom, top);
+                }
+                else
+                {
+                    x2 = Px;
+                    y2 = Py;
+                    C2 = Code(x2, y2, left, right, bottom, top);
+                }
+            }
+            DrawLine(x1, y1, x2, y2);            
+        }
+
         void Lauch_Suth(int x1, int y1, int x2, int y2)
         {
             CohenSutherland(x1, y1, x2, y2, left1, right1, bottom1, top1, 1);
         }
+        //запуск алгоритма для внутреннего отсечения
+        void Lauch_Suth_Versus(int x1, int y1, int x2, int y2)
+        {
+            CohenSutherlandVersus(x1, y1, x2, y2, left1, right1, bottom1, top1);
+            CohenSutherlandVersus(x1, y1, x2, y2, left2, right2, bottom2, top2);
+            CohenSutherlandVersus(x1, y1, x2, y2, left3, right3, bottom3, top3);
+        }
 
+        
+        void Lauch_Suth_Right(int x1, int y1, int x2, int y2)
+        {
+            CohenSutherlandVersus(x1, y1, x2, y2, l1, r1, b1, t1);
+            CohenSutherlandVersus(x1, y1, x2, y2, l2, r2, b2, t2);
+            CohenSutherlandVersus(x1, y1, x2, y2, l3, r3, b3, t3);
+            CohenSutherlandVersus(x1, y1, x2, y2, l4, r4, b4, t4);
+            CohenSutherlandVersus(x1, y1, x2, y2, l5, r5, b5, t5);
+
+        }
         //алгоритм Кируса-Бека вспомогательные функции
         private void DrawLinePointF(PointF A, PointF B)
         {
@@ -741,10 +1080,27 @@ namespace Laba1
         //рисуем отрезки на экране по полученному массиву сегментов
         private void DrawSegments(List<Segment> listSegments)
         {
+            //brush = new SolidBrush(figure1_color);
+            //PointF[] segmentPoints = { };
+            //float yyy = (float)panel_draw.Size.Height;
+            //List<PointF> list = new List<PointF>();
+
             foreach (Segment segment in listSegments)
             {
                 DrawLinePointF(segment.A, segment.B);
+                //list.Add(new PointF(segment.A.X, yyy - segment.A.Y));
+                //list.Add(new PointF(segment.B.X, yyy - segment.B.Y));
             }
+
+            //PointF[] segmentPoints = new PointF[list.Count];
+
+            //for (int i = 0; i < list.Count; i++)
+            //{
+            //    segmentPoints[i] = list[i];
+            //}
+
+            //gPanel.FillPolygon(brush, segmentPoints);
+            //list.Clear();
         }
 
 
@@ -807,19 +1163,107 @@ namespace Laba1
             //делаем смещение чтобы поместть начало координат ближе к центру
             //таким образом более наглядно будет показываться вращение относительно оси Z
 
-            if (listPoints.Count < 8) return;
-            DrawLinePointFDisplacement(listPoints[0], listPoints[1], displacement_x, displacement_y);
-            DrawLinePointFDisplacement(listPoints[1], listPoints[2], displacement_x, displacement_y);
-            DrawLinePointFDisplacement(listPoints[2], listPoints[3], displacement_x, displacement_y);
-            DrawLinePointFDisplacement(listPoints[3], listPoints[0], displacement_x, displacement_y);
-            DrawLinePointFDisplacement(listPoints[4], listPoints[5], displacement_x, displacement_y);
-            DrawLinePointFDisplacement(listPoints[5], listPoints[6], displacement_x, displacement_y);
-            DrawLinePointFDisplacement(listPoints[6], listPoints[7], displacement_x, displacement_y);
-            DrawLinePointFDisplacement(listPoints[7], listPoints[4], displacement_x, displacement_y);
-            DrawLinePointFDisplacement(listPoints[0], listPoints[4], displacement_x, displacement_y);
-            DrawLinePointFDisplacement(listPoints[1], listPoints[5], displacement_x, displacement_y);
-            DrawLinePointFDisplacement(listPoints[2], listPoints[6], displacement_x, displacement_y);
-            DrawLinePointFDisplacement(listPoints[3], listPoints[7], displacement_x, displacement_y);
+            if (checkBox_punktir.Checked == false) //если рисуем сплошными линиями
+            {
+                if (listPoints.Count < 8) return;
+                DrawLinePointFDisplacement(listPoints[0], listPoints[1], displacement_x, displacement_y);
+                DrawLinePointFDisplacement(listPoints[1], listPoints[2], displacement_x, displacement_y);
+                DrawLinePointFDisplacement(listPoints[2], listPoints[3], displacement_x, displacement_y);
+                DrawLinePointFDisplacement(listPoints[3], listPoints[0], displacement_x, displacement_y);
+                DrawLinePointFDisplacement(listPoints[4], listPoints[5], displacement_x, displacement_y);
+                DrawLinePointFDisplacement(listPoints[5], listPoints[6], displacement_x, displacement_y);
+                DrawLinePointFDisplacement(listPoints[6], listPoints[7], displacement_x, displacement_y);
+                DrawLinePointFDisplacement(listPoints[7], listPoints[4], displacement_x, displacement_y);
+                DrawLinePointFDisplacement(listPoints[0], listPoints[4], displacement_x, displacement_y);
+                DrawLinePointFDisplacement(listPoints[1], listPoints[5], displacement_x, displacement_y);
+                DrawLinePointFDisplacement(listPoints[2], listPoints[6], displacement_x, displacement_y);
+                DrawLinePointFDisplacement(listPoints[3], listPoints[7], displacement_x, displacement_y);
+            }
+            else //если рисуем невидимые грани пунктиром
+            {
+
+                //делим призму на шесть граней
+                Polygon polygon1 = new Polygon(new List<PointF> { listPoints[0], listPoints[1], listPoints[2], listPoints[3] }); //P1 P2 P3 P4
+                Polygon polygon2 = new Polygon(new List<PointF> { listPoints[3], listPoints[7], listPoints[4], listPoints[0] }); //P1 P5 P8 P4
+                Polygon polygon3 = new Polygon(new List<PointF> { listPoints[0], listPoints[4], listPoints[5], listPoints[1] }); //P1 P5 P6 P2
+                Polygon polygon4 = new Polygon(new List<PointF> { listPoints[1], listPoints[5], listPoints[6], listPoints[2] }); //P2 P6 P7 P3
+                Polygon polygon5 = new Polygon(new List<PointF> { listPoints[2], listPoints[6], listPoints[7], listPoints[3] }); //P4 P8 P7 P3
+                Polygon polygon6 = new Polygon(new List<PointF> { listPoints[7], listPoints[6], listPoints[5], listPoints[4] }); //P5 P6 P7 P8
+
+                pen.DashStyle = DashStyle.Solid;
+                if (!polygon1.IsConvex && !polygon2.IsConvex) //если и одна и вторая грань тыльные - рисуем пунктиром, иначе - сплошной линией
+                {
+                    pen.DashStyle = DashStyle.Dash;
+                }
+                DrawLinePointFDisplacement(listPoints[3], listPoints[0], displacement_x, displacement_y);
+                pen.DashStyle = DashStyle.Solid;
+                if (!polygon1.IsConvex && !polygon3.IsConvex)
+                {
+                    pen.DashStyle = DashStyle.Dash;
+                }
+                DrawLinePointFDisplacement(listPoints[0], listPoints[1], displacement_x, displacement_y);
+                pen.DashStyle = DashStyle.Solid;
+                if (!polygon1.IsConvex && !polygon4.IsConvex)
+                {
+                    pen.DashStyle = DashStyle.Dash;
+                }
+                DrawLinePointFDisplacement(listPoints[1], listPoints[2], displacement_x, displacement_y);
+                pen.DashStyle = DashStyle.Solid;
+                if (!polygon1.IsConvex && !polygon5.IsConvex)
+                {
+                    pen.DashStyle = DashStyle.Dash;
+                }
+                DrawLinePointFDisplacement(listPoints[2], listPoints[3], displacement_x, displacement_y);
+                pen.DashStyle = DashStyle.Solid;
+                if (!polygon2.IsConvex && !polygon3.IsConvex)
+                {
+                    pen.DashStyle = DashStyle.Dash;
+                }
+                DrawLinePointFDisplacement(listPoints[0], listPoints[4], displacement_x, displacement_y);
+                pen.DashStyle = DashStyle.Solid;
+                if (!polygon3.IsConvex && !polygon4.IsConvex)
+                {
+                    pen.DashStyle = DashStyle.Dash;
+                }
+                DrawLinePointFDisplacement(listPoints[1], listPoints[5], displacement_x, displacement_y);
+                pen.DashStyle = DashStyle.Solid;
+                if (!polygon4.IsConvex && !polygon5.IsConvex)
+                {
+                    pen.DashStyle = DashStyle.Dash;
+                }
+                DrawLinePointFDisplacement(listPoints[2], listPoints[6], displacement_x, displacement_y);
+                pen.DashStyle = DashStyle.Solid;
+                if (!polygon5.IsConvex && !polygon2.IsConvex)
+                {
+                    pen.DashStyle = DashStyle.Dash;
+                }
+                DrawLinePointFDisplacement(listPoints[3], listPoints[7], displacement_x, displacement_y);
+                pen.DashStyle = DashStyle.Solid;
+                if (!polygon2.IsConvex && !polygon6.IsConvex)
+                {
+                    pen.DashStyle = DashStyle.Dash;
+                }
+                DrawLinePointFDisplacement(listPoints[7], listPoints[4], displacement_x, displacement_y);
+                pen.DashStyle = DashStyle.Solid;
+                if (!polygon3.IsConvex && !polygon6.IsConvex)
+                {
+                    pen.DashStyle = DashStyle.Dash;
+                }
+                DrawLinePointFDisplacement(listPoints[4], listPoints[5], displacement_x, displacement_y);
+                pen.DashStyle = DashStyle.Solid;
+                if (!polygon4.IsConvex && !polygon6.IsConvex)
+                {
+                    pen.DashStyle = DashStyle.Dash;
+                }
+                DrawLinePointFDisplacement(listPoints[5], listPoints[6], displacement_x, displacement_y);
+                pen.DashStyle = DashStyle.Solid;
+                if (!polygon5.IsConvex && !polygon6.IsConvex)
+                {
+                    pen.DashStyle = DashStyle.Dash;
+                }
+                DrawLinePointFDisplacement(listPoints[6], listPoints[7], displacement_x, displacement_y);
+                pen.DashStyle = DashStyle.Solid;
+            }
         }
 
         private void DrawLinePointFDisplacement(PointF A, PointF B, int dis_x, int dis_y)
@@ -845,6 +1289,7 @@ namespace Laba1
             //грань фронтальная true или тыльная false? Polygon.isConvex
             //если ребро принадлежит двум тыльным граням, то оно невидимо - не рисуем его
             //иначе - рисуем
+
             if (polygon1.IsConvex || polygon2.IsConvex) //если ни одна ни вторая грань не тыльныя - рисуем
             {
                 DrawLinePointFDisplacement(listPoints[3], listPoints[0], displacement_x, displacement_y);
@@ -894,6 +1339,5 @@ namespace Laba1
                 DrawLinePointFDisplacement(listPoints[6], listPoints[7], displacement_x, displacement_y);
             }
         }
-
     }
 }
